@@ -1,6 +1,7 @@
 import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import ListItem from '../components/ListItem'
+import { View, StyleSheet, FlatList, Text } from "react-native";
+import ListItem from "../components/ListItem";
+import useFetch from '../hooks/useFetch';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,26 +15,25 @@ const styles = StyleSheet.create({
   },
 });
 
-const data = [
-  { _id: "1234", name: "Churrasco", desc: "Plato tipico!, palta, mayonesa" },
-  { _id: "12234", name: "Pepito", desc: "PEpito del notas ddel lucino" },
-  { _id: "2234", name: "Alioli", desc: "Alioli que tira para atras" },
-];
-
 const Meals = ({ navigation }) => {
+  
+  const { loading, data: meals  } = useFetch('https://serverless.jmrinconlatorre.now.sh/api/meals');
+  
   return (
     <View style={styles.container}>
+    { loading ? <Text>Cargando...</Text> : 
       <FlatList
         style={styles.list}
-        data={data}
-        keyExtractor={x => x._id}
+        data={meals}
+        keyExtractor={(x) => x._id}
         renderItem={({ item }) => (
           <ListItem
             name={item.name}
-            onPress={() => navigation.navigate('Modal', { _id: item._id })}
+            onPress={() => navigation.navigate("Modal", { _id: item._id })}
           />
         )}
       />
+    }
     </View>
   );
 };
